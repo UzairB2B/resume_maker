@@ -1,0 +1,224 @@
+/* Prevent horizontal overflow */
+body, html {
+    overflow-x: hidden;
+    max-width: 100%;
+    font-family: 'Poppins', sans-serif;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+/* Page Breaks */
+.page {
+    page-break-before: always; /* Ensure new pages */
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* First Page */
+.page:first-of-type {
+    page-break-before: avoid; /* Prevent breaking before first page */
+}
+
+/* Header */
+.header {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    background: #002D62;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Section Titles */
+h2 {
+    font-size: 20px;
+    color: #E63946;
+    margin-top: 20px;
+    border-bottom: 2px solid #E63946;
+    padding-bottom: 5px;
+    width: 100%;
+}
+
+/* Contact Section */
+.contact p {
+    margin: 5px 0;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin-top: 10px;
+    word-wrap: break-word;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+}
+
+/* Resume Header */
+.resume h1 {
+    text-align: center;
+    color: #E63946;
+    font-size: 26px;
+}
+
+/* Profile Image */
+#profileImage {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: block;
+    margin: 10px auto;
+    border: 4px solid #002D62;
+}
+
+/* Skills & Work Experience (Page 2) */
+.skills, 
+.work-experience, 
+.extra {
+    padding: 10px;
+    width: 100%;
+    overflow-wrap: break-word;
+}
+
+/* Declaration (Page 3) */
+.declaration {
+    text-align: center;
+    font-style: italic;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+/* Footer on Page 3 */
+.footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 14px;
+}
+
+.footer a {
+    text-decoration: none;
+    color: #E63946;
+    font-weight: bold;
+}
+
+.footer a:hover {
+    color: #C02E3F;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .page {
+        width: 90%;
+        margin-bottom: 20px;
+    }
+}
+/* Form Container */
+.form-container {
+    width: 100%;
+    max-width: 500px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-in-out;
+    margin: auto;
+}
+
+/* Form Heading */
+.form-container h2, 
+.form-container h3 {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #E63946;
+    margin-bottom: 10px;
+}
+
+/* Labels */
+.form-container label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* Input Fields */
+.form-container input, 
+.form-container textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Focus Effect */
+.form-container input:focus, 
+.form-container textarea:focus {
+    border-color: #E63946;
+    box-shadow: 0 0 5px rgba(230, 57, 70, 0.5);
+    outline: none;
+}
+
+/* File Input */
+.form-container input[type="file"] {
+    border: none;
+    padding: 5px;
+}
+
+/* Buttons */
+.form-container button {
+    width: 100%;
+    background: #E63946;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    margin-top: 10px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.form-container button:hover {
+    background: #C02E3F;
+}
+
+.form-container button:active {
+    transform: scale(0.98);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-container {
+        width: 90%;
+        padding: 15px;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
