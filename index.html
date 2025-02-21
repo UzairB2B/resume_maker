@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body>
+
+    <div class="container">
+        <div class="form-container">
+          
+            <h2>Resume Making Tool <br> By <br> "UZAIR B2B SERVICES" <Br>Fill Your Details</h2>
+           
+            <label>Upload Image:   <input type="file" id="imageUpload"></label><br>
+            <label>Name:           <input type="text" id="name" oninput="updateResume()"></label><br>
+            <label>Date of Birth:  <input type="text" id="dob" oninput="updateResume()"></label><br>
+            <label>Father's Name:  <input type="text" id="fname" oninput="updateResume()"></label><br>
+            <label>Mother's Name:  <input type="text" id="mname" oninput="updateResume()"></label><br>
+            <label>Nationality:    <input type="text" id="nation" oninput="updateResume()"></label><br>
+            <label>Gender:         <input type="text" id="gender" oninput="updateResume()"></label><br>
+            <label>Marital Status: <input type="text" id="marriage" oninput="updateResume()"></label><br>
+            <label>Language:       <input type="text" id="lang" oninput="updateResume()"></label><br>
+            <label>Hobbies:        <input type="text" id="hobbie" oninput="updateResume()"></label><br>
+
+
+            <label>Email: <input type="email" id="email" oninput="updateResume()"></label><br>
+            
+            <label>Phone: <input type="text" id="phone" oninput="updateResume()"></label><br>
+            
+            <label>Address: <input type="text" id="address" oninput="updateResume()"></label><br>
+            <label>Website: <input type="text" id="website" oninput="updateResume()"></label><br>
+            <label>Skills: <textarea id="skills" oninput="updateResume()"></textarea></label><br>
+
+            <h3>Add Academic Qualification</h3>
+            <label>Exam Name: <input type="text" id="examName"></label><br>
+            <label>School/University: <input type="text" id="university"></label><br>
+            <label>Passing Year: <input type="text" id="passingYear"></label><br>
+            <label>Percentage/CGPA: <input type="text" id="percentage"></label><br>
+            <button onclick="addEducation()">Add Education</button>
+<br>            
+            <label>Work Experience: <textarea id="experience" oninput="updateResume()"></textarea></label><br>
+
+            <label>Extra Qualifications: <textarea id="extra" oninput="updateResume()"></textarea></label><br>
+            
+            <button onclick="downloadPDF()">Download PDF</button>
+        </div>
+
+        <div class="footer">
+            <a href="https://www.instagram.com/uzairvibes/">Made by Uzair B2B Services</a>
+        </div>
+
+        <div class="resume-container">
+            <div id="resume" class="resume">
+                <h1>My Resume</h1>
+                <center><img id="profileImage" src="" alt="Your Image"></center>
+                <div class="header" id="resName">Your Name</div>
+                <div class="contact">
+                  
+                    <h2><u><b>PERSONAL DETAILS</b></u></h2>
+                  
+                  <p><b>Name:</b></p>              <p id="resName2">Your Name</p>  
+                  <p><b>Date of Birth:</b></p>     <p id="resDob">date/month/year</p>  
+                  <p><b>Father's Name:</b></p>     <p id="resFather">Father's Name</p>
+                  <p><b>Mother's Name:</b></p>     <p id="resMother">Mothers's Name</p>
+                  <p><b>Nationality:</b></p>       <p id="resNation">Nationality</p>
+                  <p><b>Gender:</b></p>            <p id="resGender">Male/Female</p>
+                  <p><b>Marital Status:</b></p>    <p id="resMarriage">Married/ Unmarried</p>
+                  <p><b>Languages:</b></p>         <p id="resLanguage">Hindi, English, Urdu ....</p>
+                  <p><b>Hobbies:</b></p>           <p id="resHobbie">Cycling, Gymming,....</p>
+                  <p><b>Email:</b></p>             <p id="resEmail">your.email@example.com</p>
+                  <p><b>Phone Number:</b></p>      <p id="resPhone">Your Phone</p>
+                  <p><b>Address:</b></p>           <p id="resAddress">Your Address</p>
+                  <p><b>Website:</b></p>           <p id="resWeb">Your Website</p>
+                
+                </div>
+                <div class="skills">
+                    <h2><u><b>SKILLS</b></u></h2>
+                    <p id="resSkills">Your skills...</p>
+                </div>
+                <div class="education">
+                    <h2><u><b>ACADEMIC QUALIFICATION</b></u></h2>
+                    <table>
+                        <tr>
+                            <th>Exam Name</th>
+                            <th>School/University</th>
+                            <th>Passing Year</th>
+                            <th>Percentage/CGPA</th>
+                        </tr>
+                        <tbody id="resEducation">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="work-experience">
+                    <h2><u><b>WORK EXPERIENCE</b></u></h2>
+                    <p id="resExperience">Your experience details...</p>
+                </div>
+                <div class="extra">
+                    <h2><u><b>EXTRA QUALIFICATIONS</b></u></h2>
+                    <p id="resExtra">Your extra qualifications...</p>
+                </div>
+                <div class="declaration">
+                    <h2><u><b>DECLARATION</b></u></h2>
+                    <p>“I hereby declare that all the statement made in resume are true, complete, and correct information.”</p>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+
+    <script>
+        function updateResume() {
+            
+            document.getElementById('resName').innerText = document.getElementById('name').value || "Your Name";
+
+            document.getElementById('resName2').innerText = document.getElementById('name').value || "Your Name";
+
+            document.getElementById('resDob').innerText = document.getElementById('dob').value || "date/month/year";
+
+            
+            document.getElementById('resFather').innerText = document.getElementById('fname').value || "Father's Name";
+
+
+            document.getElementById('resMother').innerText = document.getElementById('mname').value || "Mother's Name";
+
+
+            document.getElementById('resNation').innerText = document.getElementById('nation').value || "Nationality";
+
+
+            document.getElementById('resGender').innerText = document.getElementById('gender').value || "Male/Female";
+
+
+            document.getElementById('resMarriage').innerText = document.getElementById('marriage').value || "Married/ Unmarried";
+
+
+            document.getElementById('resLanguage').innerText = document.getElementById('lang').value || "Hindi, English, Urdu ....";
+
+            document.getElementById('resHobbie').innerText = document.getElementById('hobbie').value || "Cycling, Gymming,....";
+
+           
+            document.getElementById('resEmail').innerText = document.getElementById('email').value || "your.email@example.com";
+            document.getElementById('resPhone').innerText = document.getElementById('phone').value || "Your Phone";
+            document.getElementById('resAddress').innerText = document.getElementById('address').value || "Your Address";
+            document.getElementById('resWeb').innerText = document.getElementById('website').value || "Your Website";
+            document.getElementById('resSkills').innerText = document.getElementById('skills').value || "Your skills...";
+            document.getElementById('resExperience').innerText = document.getElementById('experience').value || "Your experience details...";
+            document.getElementById('resExtra').innerText = document.getElementById('extra').value || "Your extra qualifications...";
+        }
+
+        function addEducation() {
+            let exam = document.getElementById("examName").value;
+            let university = document.getElementById("university").value;
+            let year = document.getElementById("passingYear").value;
+            let percentage = document.getElementById("percentage").value;
+
+            if (exam && university && year && percentage) {
+                let table = document.getElementById("resEducation");
+                let row = table.insertRow();
+                row.insertCell(0).innerText = exam;
+                row.insertCell(1).innerText = university;
+                row.insertCell(2).innerText = year;
+                row.insertCell(3).innerText = percentage;
+            }
+        }
+
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function() {
+                document.getElementById('profileImage').src = reader.result;
+            };
+            if (file) reader.readAsDataURL(file);
+        });
+
+        function downloadPDF() {
+    const { jsPDF } = window.jspdf;  
+    if (!jsPDF) {
+        console.error("jsPDF is not loaded properly.");
+        alert("PDF library failed to load!");
+        return;
+    }
+
+    const doc = new jsPDF('p', 'mm', 'a4'); 
+    const resumeElement = document.getElementById('resume'); 
+
+    // Convert HTML to Canvas
+    html2canvas(resumeElement, {
+        scale: 2, 
+        useCORS: true, 
+        logging: true
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = 190;  // Image width in mm
+        const pageHeight = 297; // A4 page height in mm
+        let imgHeight = (canvas.height * imgWidth) / canvas.width;  
+        let heightLeft = imgHeight;  
+        let position = 10;  // Start position
+
+        // Add first page
+        doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight - 20; // Adjust for margin
+
+        // Add extra pages dynamically
+        while (heightLeft > 0) {
+            position = heightLeft - imgHeight + 20;  
+            doc.addPage();
+            doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight - 20;
+        }
+
+        // Save the generated PDF
+        doc.save("resume.pdf");
+    }).catch(error => {
+        console.error("PDF Download Error:", error);
+        alert("Failed to generate PDF. Check console for details.");
+    });
+}
+
+</script>
+</body>
+</html>
