@@ -3,225 +3,493 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume Builder</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-
-</head>
-<body>
-
-    <div class="container">
-        <div class="form-container">
-          
-            <h2>Resume Making Tool <br> By <br> "UZAIR B2B SERVICES" <Br>Fill Your Details</h2>
-           
-            <label>Upload Image:   <input type="file" id="imageUpload"></label><br>
-            <label>Name:           <input type="text" id="name" oninput="updateResume()"></label><br>
-            <label>Date of Birth:  <input type="text" id="dob" oninput="updateResume()"></label><br>
-            <label>Father's Name:  <input type="text" id="fname" oninput="updateResume()"></label><br>
-            <label>Mother's Name:  <input type="text" id="mname" oninput="updateResume()"></label><br>
-            <label>Nationality:    <input type="text" id="nation" oninput="updateResume()"></label><br>
-            <label>Gender:         <input type="text" id="gender" oninput="updateResume()"></label><br>
-            <label>Marital Status: <input type="text" id="marriage" oninput="updateResume()"></label><br>
-            <label>Language:       <input type="text" id="lang" oninput="updateResume()"></label><br>
-            <label>Hobbies:        <input type="text" id="hobbie" oninput="updateResume()"></label><br>
-
-
-            <label>Email: <input type="email" id="email" oninput="updateResume()"></label><br>
-            
-            <label>Phone: <input type="text" id="phone" oninput="updateResume()"></label><br>
-            
-            <label>Address: <input type="text" id="address" oninput="updateResume()"></label><br>
-            <label>Website: <input type="text" id="website" oninput="updateResume()"></label><br>
-            <label>Skills: <textarea id="skills" oninput="updateResume()"></textarea></label><br>
-
-            <h3>Add Academic Qualification</h3>
-            <label>Exam Name: <input type="text" id="examName"></label><br>
-            <label>School/University: <input type="text" id="university"></label><br>
-            <label>Passing Year: <input type="text" id="passingYear"></label><br>
-            <label>Percentage/CGPA: <input type="text" id="percentage"></label><br>
-            <button onclick="addEducation()">Add Education</button>
-<br>            
-            <label>Work Experience: <textarea id="experience" oninput="updateResume()"></textarea></label><br>
-
-            <label>Extra Qualifications: <textarea id="extra" oninput="updateResume()"></textarea></label><br>
-            
-            <button onclick="downloadPDF()">Download PDF</button>
-        </div>
-
-        <div class="footer">
-            <a href="https://www.instagram.com/uzairvibes/">Made by Uzair B2B Services</a>
-        </div>
-
-        <div class="resume-container">
-            <div id="resume" class="resume">
-                <h1>My Resume</h1>
-                <center><img id="profileImage" src="" alt="Your Image"></center>
-                <div class="header" id="resName">Your Name</div>
-                <div class="contact">
-                  
-                    <h2><u><b>PERSONAL DETAILS</b></u></h2>
-                  
-                  <p><b>Name:</b></p>              <p id="resName2">Your Name</p>  
-                  <p><b>Date of Birth:</b></p>     <p id="resDob">date/month/year</p>  
-                  <p><b>Father's Name:</b></p>     <p id="resFather">Father's Name</p>
-                  <p><b>Mother's Name:</b></p>     <p id="resMother">Mothers's Name</p>
-                  <p><b>Nationality:</b></p>       <p id="resNation">Nationality</p>
-                  <p><b>Gender:</b></p>            <p id="resGender">Male/Female</p>
-                  <p><b>Marital Status:</b></p>    <p id="resMarriage">Married/ Unmarried</p>
-                  <p><b>Languages:</b></p>         <p id="resLanguage">Hindi, English, Urdu ....</p>
-                  <p><b>Hobbies:</b></p>           <p id="resHobbie">Cycling, Gymming,....</p>
-                  <p><b>Email:</b></p>             <p id="resEmail">your.email@example.com</p>
-                  <p><b>Phone Number:</b></p>      <p id="resPhone">Your Phone</p>
-                  <p><b>Address:</b></p>           <p id="resAddress">Your Address</p>
-                  <p><b>Website:</b></p>           <p id="resWeb">Your Website</p>
-                
-                </div>
-                <div class="skills">
-                    <h2><u><b>SKILLS</b></u></h2>
-                    <p id="resSkills">Your skills...</p>
-                </div>
-                <div class="education">
-                    <h2><u><b>ACADEMIC QUALIFICATION</b></u></h2>
-                    <table>
-                        <tr>
-                            <th>Exam Name</th>
-                            <th>School/University</th>
-                            <th>Passing Year</th>
-                            <th>Percentage/CGPA</th>
-                        </tr>
-                        <tbody id="resEducation">
-                        </tbody>
-                    </table>
-                </div>
-                <div class="work-experience">
-                    <h2><u><b>WORK EXPERIENCE</b></u></h2>
-                    <p id="resExperience">Your experience details...</p>
-                </div>
-                <div class="extra">
-                    <h2><u><b>EXTRA QUALIFICATIONS</b></u></h2>
-                    <p id="resExtra">Your extra qualifications...</p>
-                </div>
-                <div class="declaration">
-                    <h2><u><b>DECLARATION</b></u></h2>
-                    <p>“I hereby declare that all the statement made in resume are true, complete, and correct information.”</p>
-                </div>
-            </div>
-        </div>
-        
-    </div>
-    
-
-    <script>
-        function updateResume() {
-            
-            document.getElementById('resName').innerText = document.getElementById('name').value || "Your Name";
-
-            document.getElementById('resName2').innerText = document.getElementById('name').value || "Your Name";
-
-            document.getElementById('resDob').innerText = document.getElementById('dob').value || "date/month/year";
-
-            
-            document.getElementById('resFather').innerText = document.getElementById('fname').value || "Father's Name";
-
-
-            document.getElementById('resMother').innerText = document.getElementById('mname').value || "Mother's Name";
-
-
-            document.getElementById('resNation').innerText = document.getElementById('nation').value || "Nationality";
-
-
-            document.getElementById('resGender').innerText = document.getElementById('gender').value || "Male/Female";
-
-
-            document.getElementById('resMarriage').innerText = document.getElementById('marriage').value || "Married/ Unmarried";
-
-
-            document.getElementById('resLanguage').innerText = document.getElementById('lang').value || "Hindi, English, Urdu ....";
-
-            document.getElementById('resHobbie').innerText = document.getElementById('hobbie').value || "Cycling, Gymming,....";
-
-           
-            document.getElementById('resEmail').innerText = document.getElementById('email').value || "your.email@example.com";
-            document.getElementById('resPhone').innerText = document.getElementById('phone').value || "Your Phone";
-            document.getElementById('resAddress').innerText = document.getElementById('address').value || "Your Address";
-            document.getElementById('resWeb').innerText = document.getElementById('website').value || "Your Website";
-            document.getElementById('resSkills').innerText = document.getElementById('skills').value || "Your skills...";
-            document.getElementById('resExperience').innerText = document.getElementById('experience').value || "Your experience details...";
-            document.getElementById('resExtra').innerText = document.getElementById('extra').value || "Your extra qualifications...";
+    <title>Resume Maker by Uzair B2B Services</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            scroll-behavior: smooth;
+            background-color: #f8f9fa; /* Very light gray background */
+            overflow-x: hidden; /* Prevent horizontal scroll from animations */
         }
 
-        function addEducation() {
-            let exam = document.getElementById("examName").value;
-            let university = document.getElementById("university").value;
-            let year = document.getElementById("passingYear").value;
-            let percentage = document.getElementById("percentage").value;
+        /* Hero Section (Parallax Replacement) */
+        .hero-section {
+            background: linear-gradient(rgba(34, 49, 63, 0.7), rgba(34, 49, 63, 0.7)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIyD4V8CIf7GPSbC6G25ye5bF1HR16HsdbFg&s') no-repeat center center/cover;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+            position: relative; /* For the subtle overlay */
+            box-shadow: inset 0 -10px 20px rgba(0,0,0,0.2);
+            animation: fadeIn 1.5s ease-out; /* Fade in animation */
+        }
 
-            if (exam && university && year && percentage) {
-                let table = document.getElementById("resEducation");
-                let row = table.insertRow();
-                row.insertCell(0).innerText = exam;
-                row.insertCell(1).innerText = university;
-                row.insertCell(2).innerText = year;
-                row.insertCell(3).innerText = percentage;
+        .hero-section h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5.5em;
+            font-weight: 800;
+            margin-bottom: 0.1em;
+            letter-spacing: 4px;
+            text-shadow: 4px 4px 12px rgba(0,0,0,0.8);
+            animation: slideInFromTop 1s ease-out forwards; /* Text animation */
+        }
+
+        .hero-section p {
+            font-family: 'Roboto', sans-serif;
+            font-size: 2.2em;
+            font-weight: 300;
+            margin-top: 0.5em;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+            animation: slideInFromBottom 1s ease-out forwards 0.3s; /* Text animation with delay */
+            opacity: 0; /* Start hidden for animation */
+        }
+
+        .hero-section .quote {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.7em;
+            font-style: italic;
+            margin-top: 30px;
+            max-width: 850px;
+            padding: 0 40px;
+            text-shadow: 1px 1px 6px rgba(0,0,0,0.6);
+            line-height: 1.5;
+            opacity: 0; /* Start hidden for animation */
+            animation: fadeIn 1s ease-out forwards 0.6s; /* Fade in quote */
+        }
+
+        /* Main Content Section */
+        .content-section {
+            background-color: #ffffff;
+            padding: 100px 60px;
+            margin: 40px auto;
+            max-width: 1300px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* Soft, elegant shadow */
+            position: relative;
+            z-index: 2; /* Ensures it sits above any background elements */
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+
+        .content-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5em;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .content-section h2::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 0;
+            width: 120px;
+            height: 6px;
+            background-color: #007bff; /* Primary blue accent */
+            border-radius: 3px;
+        }
+
+        .content-section p {
+            font-family: 'Roboto', sans-serif;
+            max-width: 950px;
+            margin: 0 auto 50px;
+            text-align: center;
+            font-size: 1.3em;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        /* Resume Builder Placeholder Section */
+        #resume-maker-form-section {
+            padding: 40px;
+            margin-top: 50px;
+            background-color: #fcfcfc;
+            border-radius: 12px;
+            border: 1px dashed #ced4da; /* Dashed border for placeholder */
+            box-shadow: inset 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        #resume-maker-form-section h3 {
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+            color: #34495e;
+            font-size: 2em;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        #resume-maker-form-section p {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            color: #6c757d;
+            font-size: 1.1em;
+            line-height: 1.7;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Design Buttons Section */
+        .design-buttons-container {
+            background-color: #343a40; /* Darker, modern navy */
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 35px; /* More spacing for distinct buttons */
+            border-bottom: 5px solid #212529; /* A subtle dark border */
+        }
+
+        .modern-button {
+            padding: 22px 45px;
+            border: none;
+            border-radius: 50px; /* Fully rounded, pill shape */
+            background: linear-gradient(45deg, #007bff 0%, #00c6ff 100%); /* Blue to light blue gradient */
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s ease-in-out;
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4); /* Blue glow effect */
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            min-width: 220px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transform: translateZ(0); /* Force hardware acceleration */
+        }
+
+        .modern-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            transform: skewX(-30deg);
+            transition: all 0.7s ease;
+        }
+
+        .modern-button:hover::before {
+            left: 100%;
+        }
+
+        .modern-button:hover {
+            transform: translateY(-7px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 123, 255, 0.6);
+            background: linear-gradient(45deg, #0056b3 0%, #0099e6 100%); /* Darker gradient on hover */
+        }
+
+        /* Specific button colors/gradients */
+        .modern-button:nth-child(2) { /* Professional */
+            background: linear-gradient(45deg, #28a745 0%, #20c997 100%); /* Green to teal gradient */
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        }
+        .modern-button:nth-child(2):hover {
+            background: linear-gradient(45deg, #1e7e34 0%, #1a9e7f 100%);
+            box-shadow: 0 15px 35px rgba(40, 167, 69, 0.6);
+        }
+
+        .modern-button:nth-child(3) { /* Creative */
+            background: linear-gradient(45deg, #fd7e14 0%, #ffc107 100%); /* Orange to yellow gradient */
+            box-shadow: 0 8px 25px rgba(253, 126, 20, 0.4);
+        }
+        .modern-button:nth-child(3):hover {
+            background: linear-gradient(45deg, #e66b0d 0%, #e0a800 100%);
+            box-shadow: 0 15px 35px rgba(253, 126, 20, 0.6);
+        }
+
+        /* Footer Styling */
+        .footer {
+            background-color: #212529; /* Dark footer */
+            color: #dee2e6; /* Light text */
+            padding: 40px 20px;
+            text-align: center;
+            font-size: 1.05em;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            margin-top: 50px;
+            border-top: 5px solid #343a40; /* Matching top border */
+        }
+
+        .footer p {
+            margin: 10px 0;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+        }
+
+        .footer-gift {
+            font-style: italic;
+            color: #90CAF9; /* Lighter blue accent */
+            margin-top: 25px;
+            font-size: 1.15em;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        /* Keyframe Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInFromTop {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
             }
         }
 
-        document.getElementById('imageUpload').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onload = function() {
-                document.getElementById('profileImage').src = reader.result;
-            };
-            if (file) reader.readAsDataURL(file);
-        });
-
-        function downloadPDF() {
-    const { jsPDF } = window.jspdf;  
-    if (!jsPDF) {
-        console.error("jsPDF is not loaded properly.");
-        alert("PDF library failed to load!");
-        return;
-    }
-
-    const doc = new jsPDF('p', 'mm', 'a4'); 
-    const resumeElement = document.getElementById('resume'); 
-
-    // Convert HTML to Canvas
-    html2canvas(resumeElement, {
-        scale: 2, 
-        useCORS: true, 
-        logging: true
-    }).then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
-        const imgWidth = 190;  // Image width in mm
-        const pageHeight = 297; // A4 page height in mm
-        let imgHeight = (canvas.height * imgWidth) / canvas.width;  
-        let heightLeft = imgHeight;  
-        let position = 10;  // Start position
-
-        // Add first page
-        doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight - 20; // Adjust for margin
-
-        // Add extra pages dynamically
-        while (heightLeft > 0) {
-            position = heightLeft - imgHeight + 20;  
-            doc.addPage();
-            doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight - 20;
+        @keyframes slideInFromBottom {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
-        // Save the generated PDF
-        doc.save("resume.pdf");
-    }).catch(error => {
-        console.error("PDF Download Error:", error);
-        alert("Failed to generate PDF. Check console for details.");
-    });
-}
+        /* Responsive Adjustments */
+        @media (max-width: 1200px) {
+            .hero-section h1 {
+                font-size: 4.5em;
+            }
+            .hero-section p {
+                font-size: 1.8em;
+            }
+            .hero-section .quote {
+                font-size: 1.4em;
+            }
+            .content-section {
+                padding: 80px 40px;
+            }
+            .content-section h2 {
+                font-size: 3em;
+            }
+            .content-section p {
+                font-size: 1.2em;
+            }
+        }
 
-</script>
+        @media (max-width: 992px) {
+            .hero-section {
+                min-height: 500px;
+            }
+            .hero-section h1 {
+                font-size: 3.5em;
+                letter-spacing: 3px;
+            }
+            .hero-section p {
+                font-size: 1.5em;
+            }
+            .hero-section .quote {
+                font-size: 1.2em;
+                margin-top: 20px;
+            }
+            .content-section {
+                padding: 60px 30px;
+                margin: 30px auto;
+            }
+            .content-section h2 {
+                font-size: 2.5em;
+                margin-bottom: 30px;
+            }
+            .content-section h2::after {
+                width: 100px;
+                height: 5px;
+            }
+            .content-section p {
+                font-size: 1.1em;
+                margin-bottom: 40px;
+            }
+            .modern-button {
+                padding: 18px 35px;
+                font-size: 1.2em;
+                letter-spacing: 2px;
+                min-width: 180px;
+            }
+            .design-buttons-container {
+                gap: 25px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                min-height: 450px;
+            }
+            .hero-section h1 {
+                font-size: 2.8em;
+                letter-spacing: 2px;
+            }
+            .hero-section p {
+                font-size: 1.2em;
+            }
+            .hero-section .quote {
+                font-size: 1em;
+                padding: 0 20px;
+                margin-top: 15px;
+            }
+            .content-section {
+                padding: 40px 20px;
+                margin: 20px auto;
+            }
+            .content-section h2 {
+                font-size: 2em;
+                margin-bottom: 25px;
+                padding-bottom: 15px;
+            }
+            .content-section h2::after {
+                width: 80px;
+                height: 4px;
+            }
+            .content-section p {
+                font-size: 1em;
+                margin-bottom: 30px;
+            }
+            #resume-maker-form-section {
+                padding: 25px;
+                margin-top: 30px;
+            }
+            #resume-maker-form-section h3 {
+                font-size: 1.6em;
+            }
+            #resume-maker-form-section p {
+                font-size: 0.9em;
+            }
+            .design-buttons-container {
+                flex-direction: column;
+                gap: 20px;
+                padding: 30px 15px;
+            }
+            .modern-button {
+                width: 90%;
+                max-width: 300px; /* Constrain width on small screens */
+                margin: 0 auto;
+                padding: 16px 30px;
+                font-size: 1.1em;
+                letter-spacing: 1.5px;
+            }
+            .footer {
+                padding: 30px 15px;
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-section {
+                min-height: 350px;
+            }
+            .hero-section h1 {
+                font-size: 2em;
+                letter-spacing: 1.5px;
+            }
+            .hero-section p {
+                font-size: 1em;
+            }
+            .hero-section .quote {
+                font-size: 0.85em;
+                padding: 0 10px;
+                margin-top: 10px;
+            }
+            .content-section {
+                padding: 30px 15px;
+            }
+            .content-section h2 {
+                font-size: 1.6em;
+                margin-bottom: 20px;
+            }
+            .content-section p {
+                font-size: 0.9em;
+                margin-bottom: 25px;
+            }
+            .modern-button {
+                padding: 14px 25px;
+                font-size: 1em;
+                letter-spacing: 1px;
+            }
+            .design-buttons-container {
+                gap: 15px;
+                padding: 25px 10px;
+            }
+            .footer p {
+                font-size: 0.8em;
+            }
+            .footer-gift {
+                font-size: 1em;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="design-buttons-container">
+        <button onclick="applyDesign('d1.html')" class="modern-button">Design 1</button>
+        <button onclick="applyDesign('d2.html')" class="modern-button">Design 2</button>
+        <button onclick="applyDesign('d3.html')" class="modern-button">Design 3</button>
+    </div>
+
+    <div class="hero-section">
+        <h1>Your Future Starts Now</h1>
+        <p>Build Your Perfect Resume, For Free</p>
+        <p class="quote">"The only way to do great work is to love what you do." - Steve Jobs</p>
+    </div>
+
+    <div class="content-section">
+        <h2>Unleash Your Potential</h2>
+        <p>
+            Welcome to the ultimate online resume builder! Craft a stunning, professional resume in minutes.
+            Our intuitive interface and customizable templates make it easy to highlight your skills and experience,
+            helping you land your dream job. Choose a design that suits your style and stand out from the crowd.
+        </p>
+        <div id="resume-maker-form-section">
+            <h3>Your Resume Building Interface Will Be Integrated Here</h3>
+            <p>
+                This section is dynamically prepared to host the full functionality of your resume builder.
+                You can seamlessly integrate your HTML forms, input fields, and real-time preview area here.
+                All necessary JavaScript for data management and updates can be placed within this context.
+                Simply paste your resume builder's code here, and it will blend perfectly with this elegant layout.
+            </p>
+            </div>
+    </div>
+
+    <div class="hero-section" style="background: linear-gradient(rgba(44, 62, 80, 0.7), rgba(44, 62, 80, 0.7)), url('https://via.placeholder.com/1500x800/34495e/ffffff?text=Your+Journey+Awaits') no-repeat center center/cover;">
+        <p style="animation: fadeIn 1s ease-out forwards 0.3s; opacity: 0;">Dream Big, Achieve Bigger</p>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2023 Uzair B2B Services. All rights reserved.</p>
+        <p class="footer-gift">A Gift from Uzair Bhaiya, B.A. Journalism 2022-2025</p>
+    </div>
+
+    <script>
+        function applyDesign(page) {
+            window.location.href = page;
+        }
+    </script>
 </body>
 </html>
