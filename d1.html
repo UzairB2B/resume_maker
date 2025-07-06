@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder By Uzair</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Simplified Custom Styles */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f7; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            display: flex;
+            max-width: 1100px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .form-container {
+            background-color: #f9f9f9; /* Slightly off-white for form */
+            padding: 30px;
+            width: 40%;
+            overflow-y: auto;
+            border-right: 1px solid #eee; /* Light border between form and resume */
+            max-height: calc(100vh - 40px); /* Adjust height for form scrollability */
+        }
+
+        .form-container h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .form-container input,
+        .form-container select,
+        .form-container textarea {
+            width: calc(100% - 16px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .form-container button {
+            background-color: #007bff; /* Primary blue for buttons */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .form-container button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        .resume-container {
+            background-color: #fff;
+            padding: 30px;
+            width: 60%;
+            overflow-y: auto;
+            max-height: calc(100vh - 40px); /* Adjust height for resume scrollability */
+        }
+
+        .resume {
+            padding: 20px; /* Internal padding for the resume content */
+        }
+
+        .resume h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #222;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .resume h2 {
+            font-size: 1.4rem;
+            color: #007bff; /* Highlight color for section headers */
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+
+        .resume h3 {
+            font-size: 1.1rem;
+            color: #555;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+
+        .resume p, .resume li {
+            color: #333;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+
+        .resume ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 8px;
+        }
+
+        .resume table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+
+        .resume th, .resume td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .resume th {
+            background-color: #f0f0f0; /* Light background for table headers */
+            font-weight: bold;
+        }
+
+        .resume .personal-details > div {
+            margin-bottom: 5px;
+        }
+
+        .resume .personal-details b {
+            font-weight: bold;
+            color: #555;
+            margin-right: 5px;
+        }
+
+        .resume .declaration {
+            font-style: italic;
+            color: #777;
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+
+        .resume .profile-image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .resume .profile-image {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ccc;
+            margin-bottom: 5px;
+        }
+
+        .resume .qrcode-container {
+            margin-top: 5px;
+            padding: 5px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            background-color: #fff;
+            display: inline-block;
+        }
+
+        /* Styles for interactive list items in the form */
+        .form-container .input-list-item,
+        .form-container .education-entry-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-container .input-list-item input,
+        .form-container .education-entry-item input,
+        .form-container .education-entry-item select,
+        .form-container .input-list-item textarea { /* Added textarea here */
+            flex-grow: 1;
+            margin-right: 10px;
+            border: 1px solid #eee;
+            background-color: #f9f9f9;
+            padding: 6px;
+            border-radius: 3px;
+            font-size: 0.9rem;
+        }
+
+        .form-container .input-list-item .action-button,
+        .form-container .education-entry-item .action-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .form-container .input-list-item .action-button:hover,
+        .form-container .education-entry-item .action-button:hover {
+            background-color: #eee;
+        }
+
+        .form-container .input-list-item .delete-button i,
+        .form-container .education-entry-item .delete-button i {
+            color: #dc3545; /* Red for delete */
+        }
+
+        .form-container .input-list-item .edit-button i,
+        .form-container .education-entry-item .edit-button i {
+            color: #28a745; /* Green for edit */
+        }
+
+        .form-container .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #777;
+            font-size: 0.8rem;
+        }
+
+        .form-container .footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .form-container .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* *** Alignment fix for Hobbies and Languages in Resume Preview *** */
+        .resume .personal-details > div:nth-child(8), /* Languages */
+        .resume .personal-details > div:nth-child(9)   /* Hobbies */
+        {
+            display: grid;
+            grid-template-columns: auto 1fr; /* Label takes auto width, list takes remaining */
+            gap: 0 10px; /* Small gap between label and list */
+            align-items: start; /* Align content to the top */
+        }
+        .resume .personal-details > div:nth-child(8) b,
+        .resume .personal-details > div:nth-child(9) b {
+            padding-top: 3px; /* Slightly push label down for better vertical alignment with list items */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                max-height: unset; /* Remove max-height for smaller screens */
+            }
+
+            .form-container,
+            .resume-container {
+                width: 100%;
+                max-height: 80vh; /* Allow scrolling within sections on small screens */
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+
+            .resume-container {
+                border-bottom: none; /* No bottom border on the last section */
+            }
+
+            .resume h1 {
+                font-size: 1.8rem;
+            }
+
+            .resume h2 {
+                font-size: 1.2rem;
+            }
+
+            .resume p, .resume li {
+                font-size: 0.85rem;
+            }
+
+            .resume table {
+                font-size: 0.75rem;
+            }
+
+            .resume th, .resume td {
+                padding: 6px;
+            }
+
+            .form-container input,
+            .form-container select,
+            .form-container textarea {
+                font-size: 0.85rem;
+                padding: 8px;
+            }
+
+            .form-container button {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+
+            .form-container .input-list-item input,
+            .form-container .education-entry-item input,
+            .form-container .education-entry-item select,
+            .form-container .input-list-item textarea {
+                font-size: 0.8rem;
+                padding: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2 class="text-xl font-bold text-gray-800 mb-6 text-center">Resume Builder</h2>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Upload Image:</span>
+                <input type="file" id="imageUpload" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Name:</span>
+                <input type="text" id="name" oninput="updateResume()" placeholder="Your Full Name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Date of Birth:</span>
+                <input type="date" id="dob" oninput="updateResume()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Father's Name:</span>
+                <input type="text" id="fname" oninput="updateResume()" placeholder="Father's Full Name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Mother's Name:</span>
+                <input type="text" id="mname" oninput="updateResume()" placeholder="Mother's Full Name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Nationality:</span>
+                <select id="nation" oninput="updateResume()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+                    <option value="">Select Nationality</option>
+                </select>
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Gender:</span>
+                <input type="text" id="gender" oninput="updateResume()" placeholder="Male/Female/Other" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Marital Status:</span>
+                <select id="marriage" oninput="updateResume()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+                    <option value="">Select Status</option>
+                    <option value="Single">Single</option>
+                    <option value="Married">Married</option>
+                    <option value="Divorced">Divorced</option>
+                    <option value="Widowed">Widowed</option>
+                    <option value="Other">Other</option>
+                </select>
+            </label>
+
+            <div class="block">
+                <span class="text-gray-700 font-semibold text-sm">Languages:</span>
+                <div id="languagesList" class="mt-2 space-y-1"></div>
+                <div class="flex items-center mt-2">
+                    <input type="text" id="newLanguage" placeholder="Add Language" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+                    <button type="button" onclick="addLanguage()" class="ml-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline text-xs"><i class="fas fa-plus"></i> Add</button>
+                </div>
+            </div>
+
+            <div class="block">
+                <span class="text-gray-700 font-semibold text-sm">Hobbies:</span>
+                <div id="hobbiesList" class="mt-2 space-y-1"></div>
+                <div class="flex items-center mt-2">
+                    <input type="text" id="newHobby" placeholder="Add Hobby" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+                    <button type="button" onclick="addHobby()" class="ml-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline text-xs"><i class="fas fa-plus"></i> Add</button>
+                </div>
+            </div>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Email:</span>
+                <input type="email" id="email" oninput="updateResume()" placeholder="your.email@example.com" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Phone:</span>
+                <input type="text" id="phone" oninput="updateResume(); generateQRCode()" placeholder="+91 1234567890" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Address:</span>
+                <input type="text" id="address" oninput="updateResume()" placeholder="123 Street, City, Country" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Website/LinkedIn:</span>
+                <input type="text" id="website" oninput="updateResume()" placeholder="e.g., yourwebsite.com or linkedin.com/in/yourname" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+            </label>
+
+            <div class="block">
+                <span class="text-gray-700 font-semibold text-sm">Skills:</span>
+                <div id="skillsList" class="mt-2 space-y-1"></div>
+                <div class="flex items-center mt-2">
+                    <input type="text" id="newSkill" placeholder="Add Skill" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+                    <button type="button" onclick="addSkill()" class="ml-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline text-xs"><i class="fas fa-plus"></i> Add</button>
+                </div>
+            </div>
+
+            <h3 class="text-lg font-bold text-gray-700 mt-4 mb-2">Academic Qualification</h3>
+            <div id="educationEntries" class="space-y-2"></div>
+            <button type="button" onclick="addEducationEntry()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300 ease-in-out shadow-md text-sm font-bold mt-2">Add Education</button>
+
+            <div class="block">
+                <span class="text-gray-700 font-semibold text-sm">Work Experience:</span>
+                <div id="experienceList" class="mt-2 space-y-1"></div>
+                <div class="flex items-center mt-2">
+                    <textarea id="newExperience" placeholder="Add Work Experience" rows="2" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm"></textarea>
+                    <button type="button" onclick="addExperienceItem()" class="ml-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline text-xs"><i class="fas fa-plus"></i> Add</button>
+                </div>
+            </div>
+
+            <div class="block">
+                <span class="text-gray-700 font-semibold text-sm">Extra Qualifications:</span>
+                <div id="extraList" class="mt-2 space-y-1"></div>
+                <div class="flex items-center mt-2">
+                    <textarea id="newExtra" placeholder="Add Extra Qualification" rows="2" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm"></textarea>
+                    <button type="button" onclick="addExtraItem()" class="ml-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline text-xs"><i class="fas fa-plus"></i> Add</button>
+                </div>
+            </div>
+
+            <button onclick="saveResumeImage()" class="mt-4 bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300 ease-in-out shadow-md text-sm font-bold w-full flex items-center justify-center">
+                <i class="fas fa-image mr-2"></i> Save as HD Image
+            </button>
+
+            <div class="footer mt-6 text-center text-gray-500 text-xs">
+                <a href="https://www.instagram.com/uzairvibes/" target="_blank" class="text-blue-500 hover:underline">Made by Uzair B2B Services</a>
+            </div>
+        </div>
+
+        <div class="resume-container">
+            <div id="resume" class="resume">
+                <div class="profile-image-container">
+                    <img id="profileImage" src="https://via.placeholder.com/80/E0E7FF/4338CA?Text=Profile" alt="Profile" class="profile-image">
+                    <div id="qrcode" class="qrcode-container"></div>
+                    <p class="text-xs text-gray-600 mt-1">Scan QR to contact</p>
+                </div>
+                <h1 id="resMainName">Your Name</h1>
+                <div class="personal-details">
+                    <h2>PERSONAL DETAILS</h2>
+                    <div><b>Name:</b> <span id="resName2"></span></div>
+                    <div><b>Date of Birth:</b> <span id="resDob"></span></div>
+                    <div><b>Father's Name:</b> <span id="resFather"></span></div>
+                    <div><b>Mother's Name:</b> <span id="resMother"></span></div>
+                    <div><b>Nationality:</b> <span id="resNation"></span></div>
+                    <div><b>Gender:</b> <span id="resGender"></span></div>
+                    <div><b>Marital Status:</b> <span id="resMarriage"></span></div>
+                    <div><b>Languages:</b> <ul id="resLanguage"></ul></div>
+                    <div><b>Hobbies:</b> <ul id="resHobbie"></ul></div>
+                    <div><b>Email:</b> <span id="resEmail"></span></div>
+                    <div><b>Phone Number:</b> <span id="resPhone"></span></div>
+                    <div><b>Address:</b> <span id="resAddress"></span></div>
+                    <div><b>Website/LinkedIn:</b> <span id="resWeb"></span></div>
+                </div>
+
+                <div class="skills">
+                    <h2>SKILLS</h2>
+                    <ul id="resSkills"></ul>
+                </div>
+
+                <div class="education">
+                    <h2>ACADEMIC QUALIFICATION</h2>
+                    <table id="resEducation">
+                        <thead>
+                            <tr>
+                                <th>Exam Name</th>
+                                <th>School/University</th>
+                                <th>Passing Year</th>
+                                <th>Percentage/CGPA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+
+                <div class="work-experience">
+                    <h2>WORK EXPERIENCE</h2>
+                    <ul id="resExperience"></ul>
+                </div>
+
+                <div class="extra">
+                    <h2>EXTRA QUALIFICATIONS</h2>
+                    <ul id="resExtra"></ul>
+                </div>
+
+                <div class="declaration">
+                    <h2>DECLARATION</h2>
+                    <p>“I hereby declare that all the statements made in this resume are true, complete, and correct to the best of my knowledge and belief.”</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let qrcodeInstance = null;
+        const countries = [
+            "India", "United States", "United Kingdom", "Canada", "Australia", "Germany", "France", "Japan", "China", "Brazil",
+            "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Austria",
+            "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
+            "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia",
+            "Cameroon", "Central African Republic", "Chad", "Chile", "Colombia", "Comoros", "Congo (Brazzaville)", "Congo (Kinshasa)",
+            "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czechia", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador",
+            "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland",
+            "Gabon", "Gambia", "Georgia", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau",
+            "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "Indonesia", "Iran", "Iraq", "Ireland",
+            "Israel", "Italy", "Ivory Coast", "Jamaica", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo",
+            "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania",
+            "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius",
+            "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia",
+            "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway",
+            "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland",
+            "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino",
+            "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands",
+            "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland",
+            "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia",
+            "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "Uruguay", "Uzbekistan",
+            "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+        ];
+        let languages = [];
+        let hobbies = [];
+        let skills = [];
+        let educationEntries = [];
+        let workExperience = [];
+        let extraQualifications = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            populateCountries();
+            updateResume();
+            generateQRCode();
+            renderLanguages();
+            renderHobbies();
+            renderSkills();
+            renderEducationEntries();
+            renderWorkExperience();
+            renderExtraQualifications();
+        });
+
+        function populateCountries() {
+            const selectElement = document.getElementById('nation');
+            countries.forEach(country => {
+                const option = document.createElement('option');
+                option.value = country;
+                option.innerText = country;
+                selectElement.appendChild(option);
+            });
+        }
+
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function() {
+                document.getElementById('profileImage').src = reader.result;
+            };
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('profileImage').src = "https://via.placeholder.com/80/E0E7FF/4338CA?Text=Profile"; // Default placeholder
+            }
+        });
+
+        function generateQRCode() {
+            const phoneNumber = document.getElementById('phone').value;
+            const qrcodeDiv = document.getElementById('qrcode');
+
+            if (qrcodeInstance) {
+                qrcodeInstance.clear();
+                qrcodeDiv.innerHTML = '';
+            }
+
+            if (phoneNumber && phoneNumber.trim() !== '') {
+                const qrData = `tel:${phoneNumber.replace(/[^0-9+]/g, '')}`;
+                qrcodeInstance = new QRCode(qrcodeDiv, {
+                    text: qrData,
+                    width: 70, // Slightly smaller QR code
+                    height: 70,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+            } else {
+                qrcodeDiv.innerHTML = '<p class="text-center text-gray-500 text-xs">Enter phone number</p>';
+            }
+        }
+
+        function updateResume() {
+            document.getElementById('resMainName').innerText = document.getElementById('name').value || "Your Name";
+            document.getElementById('resName2').innerText = document.getElementById('name').value || "Your Name";
+            document.getElementById('resDob').innerText = document.getElementById('dob').value || "DD/MM/YYYY";
+            document.getElementById('resFather').innerText = document.getElementById('fname').value || "Father's Name";
+            document.getElementById('resMother').innerText = document.getElementById('mname').value || "Mother's Name";
+            document.getElementById('resNation').innerText = document.getElementById('nation').value || "Not Specified";
+            document.getElementById('resGender').innerText = document.getElementById('gender').value || "Not Specified";
+            document.getElementById('resMarriage').innerText = document.getElementById('marriage').value || "Not Specified";
+            document.getElementById('resEmail').innerText = document.getElementById('email').value || "your.email@example.com";
+            document.getElementById('resPhone').innerText = document.getElementById('phone').value || "Your Phone";
+            document.getElementById('resAddress').innerText = document.getElementById('address').value || "Your Address";
+            document.getElementById('resWeb').innerText = document.getElementById('website').value || "Your Website/LinkedIn";
+
+            updateResumeLanguages();
+            updateResumeHobbies();
+            updateResumeSkills();
+            updateResumeEducation();
+            updateResumeExperience();
+            updateResumeExtra();
+        }
+
+        function addListItem(inputId, dataArray, renderFunction, updateResumeFunction) {
+            const newItem = document.getElementById(inputId).value.trim();
+            if (newItem && !dataArray.includes(newItem)) {
+                dataArray.push(newItem);
+                renderFunction();
+                updateResumeFunction();
+                document.getElementById(inputId).value = '';
+            }
+        }
+
+        function deleteListItem(itemToRemove, dataArray, renderFunction, updateResumeFunction) {
+            const index = dataArray.indexOf(itemToRemove);
+            if (index > -1) {
+                dataArray.splice(index, 1);
+                renderFunction();
+                updateResumeFunction();
+            }
+        }
+
+        function updateListItem(oldItem, newItem, dataArray, renderFunction, updateResumeFunction) {
+            const index = dataArray.indexOf(oldItem);
+            if (index !== -1) {
+                if (newItem.trim() === '') {
+                    // If new item is empty, delete it
+                    deleteListItem(oldItem, dataArray, renderFunction, updateResumeFunction);
+                } else {
+                    dataArray[index] = newItem.trim();
+                    renderFunction();
+                    updateResumeFunction();
+                }
+            }
+        }
+
+
+        function renderList(targetId, dataArray, type = 'text') {
+            const listElement = document.getElementById(targetId);
+            listElement.innerHTML = '';
+            dataArray.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'input-list-item';
+                let inputHtml = '';
+
+                if (type === 'textarea') {
+                    inputHtml = `<textarea onblur="updateListItem('${item}', this.value, ${targetId.replace('List', '')}, render${targetId.replace('List', '')}, updateResume${targetId.replace('List', '')})" class="flex-grow w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">${item}</textarea>`;
+                } else { // type === 'text'
+                    inputHtml = `<input type="text" value="${item}" onblur="updateListItem('${item}', this.value, ${targetId.replace('List', '')}, render${targetId.replace('List', '')}, updateResume${targetId.replace('List', '')})" class="flex-grow w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">`;
+                }
+
+                div.innerHTML = `
+                    ${inputHtml}
+                    <button type="button" onclick="deleteListItem('${item}', ${targetId.replace('List', '')}, render${targetId.replace('List', '')}, updateResume${targetId.replace('List', '')})" class="action-button delete-button"><i class="fas fa-trash-alt"></i></button>
+                `;
+                listElement.appendChild(div);
+            });
+        }
+
+        function updateResumeList(resTargetId, dataArray) {
+            const ul = document.getElementById(resTargetId);
+            ul.innerHTML = '';
+            if (dataArray.length === 0) {
+                // ul.innerHTML = '<li>Not specified</li>'; // Optional: if you want a "Not specified"
+                return;
+            }
+            dataArray.forEach(item => {
+                const li = document.createElement('li');
+                li.innerText = item;
+                ul.appendChild(li);
+            });
+        }
+
+        // Languages
+        function addLanguage() { addListItem('newLanguage', languages, renderLanguages, updateResumeLanguages); }
+        function renderLanguages() { renderList('languagesList', languages, 'text'); }
+        function updateResumeLanguages() { updateResumeList('resLanguage', languages); }
+
+        // Hobbies
+        function addHobby() { addListItem('newHobby', hobbies, renderHobbies, updateResumeHobbies); }
+        function renderHobbies() { renderList('hobbiesList', hobbies, 'text'); }
+        function updateResumeHobbies() { updateResumeList('resHobbie', hobbies); }
+
+        // Skills
+        function addSkill() { addListItem('newSkill', skills, renderSkills, updateResumeSkills); }
+        function renderSkills() { renderList('skillsList', skills, 'text'); }
+        function updateResumeSkills() { updateResumeList('resSkills', skills); }
+
+        // Work Experience
+        function addExperienceItem() { addListItem('newExperience', workExperience, renderWorkExperience, updateResumeExperience); }
+        function renderWorkExperience() { renderList('experienceList', workExperience, 'textarea'); }
+        function updateResumeExperience() { updateResumeList('resExperience', workExperience); }
+
+        // Extra Qualifications
+        function addExtraItem() { addListItem('newExtra', extraQualifications, renderExtraQualifications, updateResumeExtra); }
+        function renderExtraQualifications() { renderList('extraList', extraQualifications, 'textarea'); }
+        function updateResumeExtra() { updateResumeList('resExtra', extraQualifications); }
+
+        // Academic Qualification Management
+        function addEducationEntry() {
+            const entry = {
+                exam: '',
+                university: '',
+                year: '',
+                percentage: ''
+            };
+            educationEntries.push(entry);
+            renderEducationEntries();
+            updateResumeEducation();
+        }
+
+        function renderEducationEntries() {
+            const container = document.getElementById('educationEntries');
+            container.innerHTML = '';
+            educationEntries.forEach((entry, index) => {
+                const div = document.createElement('div');
+                div.className = 'education-entry-item flex-col space-y-2';
+                div.innerHTML = `
+                    <div class="flex items-center w-full">
+                        <label class="block flex-grow mr-2">
+                            <span class="text-gray-700 font-semibold text-sm">Exam Name:</span>
+                            <input type="text" value="${entry.exam}" oninput="updateEducationField(${index}, 'exam', this.value)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+                        </label>
+                        <label class="block flex-grow">
+                            <span class="text-gray-700 font-semibold text-sm">School/University:</span>
+                            <input type="text" value="${entry.university}" oninput="updateEducationField(${index}, 'university', this.value)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+                        </label>
+                    </div>
+                    <div class="flex items-center w-full">
+                        <label class="block flex-grow mr-2">
+                            <span class="text-gray-700 font-semibold text-sm">Passing Year:</span>
+                            <input type="number" value="${entry.year}" oninput="updateEducationField(${index}, 'year', this.value)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+                        </label>
+                        <label class="block flex-grow">
+                            <span class="text-gray-700 font-semibold text-sm">Percentage/CGPA:</span>
+                            <input type="text" value="${entry.percentage}" oninput="updateEducationField(${index}, 'percentage', this.value)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 text-sm">
+                        </label>
+                    </div>
+                    <div class="flex justify-end w-full">
+                        <button type="button" onclick="deleteEducationEntry(${index})" class="action-button delete-button"><i class="fas fa-trash-alt"></i> Delete</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateEducationField(index, field, value) {
+            if (educationEntries[index]) {
+                educationEntries[index][field] = value;
+                updateResumeEducation();
+            }
+        }
+
+        function deleteEducationEntry(index) {
+            educationEntries.splice(index, 1);
+            renderEducationEntries();
+            updateResumeEducation();
+        }
+
+        function updateResumeEducation() {
+            const tableBody = document.querySelector("#resEducation tbody"); // Select tbody directly
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            if (educationEntries.length === 0) {
+                const row = tableBody.insertRow();
+                row.innerHTML = `<td colspan="4" class="text-center text-gray-500 py-2">No academic qualifications added.</td>`;
+                return;
+            }
+
+            educationEntries.forEach(entry => {
+                const row = tableBody.insertRow();
+                row.className = "hover:bg-gray-50 transition duration-150 ease-in-out";
+                row.insertCell(0).innerText = entry.exam || 'N/A';
+                row.insertCell(1).innerText = entry.university || 'N/A';
+                row.insertCell(2).innerText = entry.year || 'N/A';
+                row.insertCell(3).innerText = entry.percentage || 'N/A';
+            });
+        }
+
+        // --- Save Resume as High Quality Image ---
+        function saveResumeImage() {
+            const resumeElement = document.getElementById('resume');
+
+            // Temporarily adjust background for a clean screenshot if needed (optional)
+            // const originalBg = resumeElement.style.backgroundColor;
+            // resumeElement.style.backgroundColor = '#ffffff';
+
+            html2canvas(resumeElement, {
+                scale: 4, // Increase scale for higher quality image (e.g., 2, 3, 4, 5)
+                useCORS: true, // Important for images loaded from different origins (like placeholder or uploaded image)
+                logging: false, // Set to true for debugging
+                windowWidth: resumeElement.scrollWidth,
+                windowHeight: resumeElement.scrollHeight,
+                x: resumeElement.scrollLeft,
+                y: resumeElement.scrollTop,
+                scrollX: -window.scrollX,
+                scrollY: -window.scrollY
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'resume.png';
+                link.href = canvas.toDataURL('image/png'); // Get data URL of the image
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                // Revert background if changed
+                // resumeElement.style.backgroundColor = originalBg;
+            }).catch(error => {
+                console.error("Error generating image:", error);
+                alert("Failed to generate image. Please try again or check console for errors.");
+            });
+        }
+    </script>
+</body>
+</html
