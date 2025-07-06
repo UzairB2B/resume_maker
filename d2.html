@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Restored "Sexy" Custom Styles */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #e2e8f0; /* Soft gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+            box-sizing: border-box; /* Ensures padding is included in element's total width and height */
+        }
+
+        .container {
+            max-width: 1280px;
+            background-color: #fff;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            display: flex;
+            width: 100%;
+            height: calc(100vh - 4rem); /* Occupy full viewport height minus body padding */
+            overflow: hidden; /* Prevent container overflow */
+        }
+
+        .form-container {
+            background-color: #f7fafc;
+            border-right: 1px solid #e2e8f0;
+            padding: 2rem;
+            overflow-y: auto; /* Enable scrolling for the form */
+            flex: 0 0 40%; /* Take 40% width */
+            box-sizing: border-box;
+        }
+
+        .form-container h2 {
+            color: #374151;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-container label {
+            color: #4a5568;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-container input,
+        .form-container select,
+        .form-container textarea {
+            border-radius: 0.375rem;
+            border: 1px solid #d2d6dc;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+            padding: 0.75rem;
+            width: 100%;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            box-sizing: border-box; /* Include padding in width calculation */
+        }
+
+        .form-container input:focus,
+        .form-container select:focus,
+        .form-container textarea:focus {
+            border-color: #63b3ed;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(99, 179, 237, 0.25);
+        }
+
+        .form-container button {
+            border-radius: 0.375rem;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: background-color 0.15s ease-in-out;
+            width: 100%; /* Make buttons full width */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-container .add-button {
+            background-color: #48bb78; /* Green add button */
+            color: #fff;
+        }
+
+        .form-container .add-button:hover {
+            background-color: #38a169;
+        }
+
+        .form-container .download-button {
+            background-color: #667eea; /* Indigo download button */
+            color: #fff;
+            margin-top: 2rem;
+        }
+
+        .form-container .download-button:hover {
+            background-color: #5a67d8;
+        }
+
+        .resume-container {
+            background-color: #fff;
+            padding: 2rem;
+            overflow-y: auto; /* Enable scrolling for the resume preview */
+            flex: 1; /* Take remaining width */
+            box-sizing: border-box;
+            display: flex; /* Use flex to center resume content */
+            justify-content: center;
+            align-items: flex-start; /* Align content to the top */
+        }
+
+        .resume {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            width: 8.5in; /* A4 width proxy */
+            min-height: 11in; /* A4 height proxy, will expand with content */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+
+        .resume h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .resume h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            border-bottom: 2px solid #a0aec0; /* A darker gray border */
+            padding-bottom: 0.5rem;
+        }
+
+        .resume h3 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #718096;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .resume p, .resume li {
+            color: #2d3748;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .resume ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .resume table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .resume th, .resume td {
+            border: 1px solid #e2e8f0;
+            padding: 0.5rem;
+            text-align: left;
+        }
+
+        .resume th {
+            background-color: #f7fafc;
+            font-weight: 600;
+        }
+
+        .resume .personal-details > div {
+            margin-bottom: 0.5rem;
+        }
+
+        .resume .personal-details b {
+            font-weight: 500;
+            color: #4a5568;
+            margin-right: 0.25rem;
+        }
+
+        .resume .declaration {
+            font-style: italic;
+            color: #718096;
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .resume .profile-image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .resume .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #a0aec0;
+            margin-bottom: 0.5rem;
+        }
+
+        .resume .qrcode-container {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 0.25rem;
+            background-color: #fff;
+            display: inline-block; /* To contain QR code properly */
+        }
+
+        /* Styles for dynamic list items in form */
+        .form-container .input-list-item,
+        .form-container .education-entry-item {
+            background-color: #edf2f7; /* Light blue-gray for list items */
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .form-container .education-entry-item {
+            flex-direction: column; /* Stack fields for education entries */
+            align-items: flex-start;
+        }
+        .form-container .education-entry-item > div {
+            width: 100%; /* Make inner divs full width */
+            display: flex;
+            margin-bottom: 0.5rem;
+        }
+        .form-container .education-entry-item > div:last-child {
+            margin-bottom: 0;
+        }
+        .form-container .education-entry-item .action-button {
+            margin-left: auto; /* Push delete button to the right for education */
+        }
+
+
+        .form-container .input-list-item input,
+        .form-container .education-entry-item input,
+        .form-container .education-entry-item select,
+        .form-container .input-list-item textarea {
+            flex-grow: 1;
+            margin-right: 0.5rem; /* Space between input and buttons */
+            border: none; /* Remove border from input fields within list items */
+            background-color: transparent; /* Transparent background */
+            box-shadow: none; /* No shadow */
+            padding: 0.5rem; /* Adjust padding */
+            margin-bottom: 0; /* Remove extra margin */
+        }
+        .form-container .education-entry-item input,
+        .form-container .education-entry-item select {
+            border: 1px solid #d2d6dc; /* Keep border for education inputs */
+            background-color: #fff;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+        }
+
+        .form-container .input-list-item .action-button,
+        .form-container .education-entry-item .action-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .form-container .input-list-item .action-button:hover,
+        .form-container .education-entry-item .action-button:hover {
+            background-color: #d1d5db; /* Light hover background */
+        }
+
+        .form-container .input-list-item .delete-button i,
+        .form-container .education-entry-item .delete-button i {
+            color: #e53e3e; /* Red delete icon */
+        }
+
+        .form-container .input-list-item .edit-button i,
+        .form-container .education-entry-item .edit-button i {
+            color: #38a169; /* Green edit icon */
+        }
+
+        .form-container .footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: #a0aec0;
+            font-size: 0.875rem;
+        }
+
+        .form-container .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .form-container .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Specific Alignment Fixes for Hobbies and Languages in Resume --- */
+        /* Target the div containing "Languages:" and its UL */
+        .resume .personal-details > div:nth-child(8) { /* Assuming Languages is the 8th div in personal-details */
+            display: grid;
+            grid-template-columns: auto 1fr; /* Label takes auto width, UL takes remaining */
+            gap: 0 10px; /* Gap between label and list */
+            align-items: start; /* Align content to the top */
+        }
+
+        .resume .personal-details > div:nth-child(8) b {
+            padding-top: 3px; /* Fine-tune vertical alignment of label */
+        }
+
+        /* Target the div containing "Hobbies:" and its UL */
+        .resume .personal-details > div:nth-child(9) { /* Assuming Hobbies is the 9th div in personal-details */
+            display: grid;
+            grid-template-columns: auto 1fr; /* Label takes auto width, UL takes remaining */
+            gap: 0 10px; /* Gap between label and list */
+            align-items: start; /* Align content to the top */
+        }
+        .resume .personal-details > div:nth-child(9) b {
+            padding-top: 3px; /* Fine-tune vertical alignment of label */
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+                height: auto; /* Allow height to adjust */
+                min-height: 100vh;
+            }
+
+            .form-container,
+            .resume-container {
+                width: 100%;
+                max-height: unset; /* Remove fixed height for responsiveness */
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            .resume-container {
+                padding-bottom: 2rem; /* Add padding at the bottom when stacked */
+                border-bottom: none; /* No border on the very last section */
+                min-height: 500px; /* Ensure some height for resume preview */
+            }
+
+            .resume {
+                width: 100%; /* Resume can take full width on smaller screens */
+                min-height: auto; /* Let resume height adjust */
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            .container {
+                border-radius: 0;
+                box-shadow: none;
+            }
+            .form-container, .resume-container {
+                padding: 1rem;
+            }
+            .resume h1 {
+                font-size: 2rem;
+            }
+            .resume h2 {
+                font-size: 1.5rem;
+            }
+            .resume h3 {
+                font-size: 1.1rem;
+            }
+            .resume p, .resume li {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2 class="text-xl font-bold mb-6">Resume Builder</h2>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Upload Image:</span>
+                <input type="file" id="imageUpload" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Name:</span>
+                <input type="text" id="name" oninput="updateResume()" placeholder="Your Full Name">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Date of Birth:</span>
+                <input type="date" id="dob" oninput="updateResume()">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Father's Name:</span>
+                <input type="text" id="fname" oninput="updateResume()" placeholder="Father's Full Name">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Mother's Name:</span>
+                <input type="text" id="mname" oninput="updateResume()" placeholder="Mother's Full Name">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Nationality:</span>
+                <select id="nation" oninput="updateResume()">
+                    <option value="">Select Nationality</option>
+                </select>
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Gender:</span>
+                <input type="text" id="gender" oninput="updateResume()" placeholder="Male/Female/Other">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Marital Status:</span>
+                <select id="marriage" oninput="updateResume()">
+                    <option value="">Select Status</option>
+                    <option value="Single">Single</option>
+                    <option value="Married">Married</option>
+                    <option value="Divorced">Divorced</option>
+                    <option value="Widowed">Widowed</option>
+                    <option value="Other">Other</option>
+                </select>
+            </label>
+
+            <div class="block">
+                <span class="text-gray-700 font-semibold text-sm">Languages:</span>
+                <div id="languagesList" class="mt-2 space-y-1"></div>
+                <div class="flex items-center mt-2">
+                    <input type="text" id="newLanguage" placeholder="Add Language" class="block w-full">
+                    <button type="button" onclick="addLanguage()" class="ml-2 add-button text-xs py-2 px-3"><i class="fas fa-plus"></i> Add</button>
+                </div>
+            </div>
+
+            <div class="block">
+                <span class="text-gray-700 font-semibold text-sm">Hobbies:</span>
+                <div id="hobbiesList" class="mt-2 space-y-1"></div>
+                <div class="flex items-center mt-2">
+                    <input type="text" id="newHobby" placeholder="Add Hobby" class="block w-full">
+                    <button type="button" onclick="addHobby()" class="ml-2 add-button text-xs py-2 px-3"><i class="fas fa-plus"></i> Add</button>
+                </div>
+            </div>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Email:</span>
+                <input type="email" id="email" oninput="updateResume()" placeholder="your.email@example.com">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Phone:</span>
+                <input type="text" id="phone" oninput="updateResume(); generateQRCode()" placeholder="+91 1234567890">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Address:</span>
+                <input type="text" id="address" oninput="updateResume()" placeholder="123 Street, City, Country">
+            </label>
+
+            <label class="block">
+                <span class="text-gray-700 font-semibold text-sm">Website/LinkedIn:</span>
+                <input type="text" id="website" oninput="updateResume()" placeholder="e.g., yourwebsite.com or linkedin.com/in/yourname">
+            </label>
+
+            <div class="block">
+                <span class="text-gray-700 font-semibold text-sm">Skills:</span>
+                <div id="skillsList" class="mt-2 space-y-1"></div>
+                <div class="flex items-center mt-2">
+                    <input type="text" id="newSkill" placeholder="Add Skill" class="block w-full">
+                    <button type="button" onclick="addSkill()" class="ml-2 add-button text-xs py-2 px-3"><i class="fas fa-plus"></i> Add</button>
+                </div>
+            </div>
+
+            <h3 class="text-lg font-bold text-gray-700 mt-4 mb-2">Academic Qualification</h3>
+            <div id="educationEntries" class="space-y-2"></div>
+            <button type="button" onclick="addEducationEntry()" class="download-button bg-blue-600 text-white text-sm font-bold mt-2">Add Education</button>
+
+            <div class="block">
+                <span class="text-gray-700 font-semibold text-sm">Work Experience:</span>
+                <div id="experienceList" class="mt-2 space-y-1"></div>
+                <div class="flex items-center mt-2">
+                    <textarea id="newExperience" placeholder="Add Work Experience" rows="2" class="block w-full"></textarea>
+                    <button type="button" onclick="addExperienceItem()" class="ml-2 add-button text-xs py-2 px-3"><i class="fas fa-plus"></i> Add</button>
+                </div>
+            </div>
+
+            <div class="block">
+                <span class="text-gray-700 font-semibold text-sm">Extra Qualifications:</span>
+                <div id="extraList" class="mt-2 space-y-1"></div>
+                <div class="flex items-center mt-2">
+                    <textarea id="newExtra" placeholder="Add Extra Qualification" rows="2" class="block w-full"></textarea>
+                    <button type="button" onclick="addExtraItem()" class="ml-2 add-button text-xs py-2 px-3"><i class="fas fa-plus"></i> Add</button>
+                </div>
+            </div>
+
+            <button onclick="saveResumeImage()" class="download-button mt-4">
+                <i class="fas fa-image mr-2"></i> Save as HD Image
+            </button>
+
+            <div class="footer mt-6">
+                <a href="https://www.instagram.com/uzairvibes/" target="_blank">Made by Uzair B2B Services</a>
+            </div>
+        </div>
+
+        <div class="resume-container">
+            <div id="resume" class="resume">
+                <div class="profile-image-container">
+                    <img id="profileImage" src="https://via.placeholder.com/80/E0E7FF/4338CA?Text=Profile" alt="Profile" class="profile-image">
+                    <div id="qrcode" class="qrcode-container"></div>
+                    <p class="text-xs text-gray-600 mt-1">Scan QR to contact</p>
+                </div>
+                <h1 id="resMainName">Your Name</h1>
+                <div class="personal-details">
+                    <h2>PERSONAL DETAILS</h2>
+                    <div><b>Name:</b> <span id="resName2"></span></div>
+                    <div><b>Date of Birth:</b> <span id="resDob"></span></div>
+                    <div><b>Father's Name:</b> <span id="resFather"></span></div>
+                    <div><b>Mother's Name:</b> <span id="resMother"></span></div>
+                    <div><b>Nationality:</b> <span id="resNation"></span></div>
+                    <div><b>Gender:</b> <span id="resGender"></span></div>
+                    <div><b>Marital Status:</b> <span id="resMarriage"></span></div>
+                    <div><b>Languages:</b> <ul id="resLanguage"></ul></div>
+                    <div><b>Hobbies:</b> <ul id="resHobbie"></ul></div>
+                    <div><b>Email:</b> <span id="resEmail"></span></div>
+                    <div><b>Phone Number:</b> <span id="resPhone"></span></div>
+                    <div><b>Address:</b> <span id="resAddress"></span></div>
+                    <div><b>Website/LinkedIn:</b> <span id="resWeb"></span></div>
+                </div>
+
+                <div class="skills">
+                    <h2>SKILLS</h2>
+                    <ul id="resSkills"></ul>
+                </div>
+
+                <div class="education">
+                    <h2>ACADEMIC QUALIFICATION</h2>
+                    <table id="resEducation">
+                        <thead>
+                            <tr>
+                                <th>Exam Name</th>
+                                <th>School/University</th>
+                                <th>Passing Year</th>
+                                <th>Percentage/CGPA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+
+                <div class="work-experience">
+                    <h2>WORK EXPERIENCE</h2>
+                    <ul id="resExperience"></ul>
+                </div>
+
+                <div class="extra">
+                    <h2>EXTRA QUALIFICATIONS</h2>
+                    <ul id="resExtra"></ul>
+                </div>
+
+                <div class="declaration">
+                    <h2>DECLARATION</h2>
+                    <p>“I hereby declare that all the statements made in this resume are true, complete, and correct to the best of my knowledge and belief.”</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let qrcodeInstance = null;
+        const countries = [
+            "India", "United States", "United Kingdom", "Canada", "Australia", "Germany", "France", "Japan", "China", "Brazil",
+            "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Austria",
+            "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
+            "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia",
+            "Cameroon", "Central African Republic", "Chad", "Chile", "Colombia", "Comoros", "Congo (Brazzaville)", "Congo (Kinshasa)",
+            "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czechia", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador",
+            "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland",
+            "Gabon", "Gambia", "Georgia", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau",
+            "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "Indonesia", "Iran", "Iraq", "Ireland",
+            "Israel", "Italy", "Ivory Coast", "Jamaica", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo",
+            "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania",
+            "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius",
+            "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia",
+            "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway",
+            "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland",
+            "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino",
+            "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands",
+            "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland",
+            "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia",
+            "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "Uruguay", "Uzbekistan",
+            "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+        ];
+        let languages = [];
+        let hobbies = [];
+        let skills = [];
+        let educationEntries = [];
+        let workExperience = [];
+        let extraQualifications = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            populateCountries();
+            updateResume(); // Initial update to display placeholders
+            generateQRCode(); // Initial QR code generation
+            renderLanguages();
+            renderHobbies();
+            renderSkills();
+            renderEducationEntries();
+            renderWorkExperience();
+            renderExtraQualifications();
+        });
+
+        function populateCountries() {
+            const selectElement = document.getElementById('nation');
+            countries.forEach(country => {
+                const option = document.createElement('option');
+                option.value = country;
+                option.innerText = country;
+                selectElement.appendChild(option);
+            });
+        }
+
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function() {
+                document.getElementById('profileImage').src = reader.result;
+            };
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('profileImage').src = "https://via.placeholder.com/80/E0E7FF/4338CA?Text=Profile"; // Default placeholder
+            }
+        });
+
+        function generateQRCode() {
+            const phoneNumber = document.getElementById('phone').value;
+            const qrcodeDiv = document.getElementById('qrcode');
+
+            // Clear previous QR code if exists
+            if (qrcodeInstance) {
+                qrcodeInstance.clear();
+                qrcodeDiv.innerHTML = ''; // Clear the div's content
+            }
+
+            if (phoneNumber && phoneNumber.trim() !== '') {
+                const qrData = `tel:${phoneNumber.replace(/[^0-9+]/g, '')}`; // Format for phone numbers
+                qrcodeInstance = new QRCode(qrcodeDiv, {
+                    text: qrData,
+                    width: 70, // Adjust size as needed
+                    height: 70,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H // High error correction
+                });
+            } else {
+                qrcodeDiv.innerHTML = '<p class="text-center text-gray-500 text-xs">Enter phone number</p>';
+            }
+        }
+
+        function updateResume() {
+            // Personal Details
+            document.getElementById('resMainName').innerText = document.getElementById('name').value || "Your Name";
+            document.getElementById('resName2').innerText = document.getElementById('name').value || ""; // Keep this blank if no name, as it's redundant with Main Name
+            document.getElementById('resDob').innerText = document.getElementById('dob').value || "DD/MM/YYYY";
+            document.getElementById('resFather').innerText = document.getElementById('fname').value || "";
+            document.getElementById('resMother').innerText = document.getElementById('mname').value || "";
+            document.getElementById('resNation').innerText = document.getElementById('nation').value || "";
+            document.getElementById('resGender').innerText = document.getElementById('gender').value || "";
+            document.getElementById('resMarriage').innerText = document.getElementById('marriage').value || "";
+            document.getElementById('resEmail').innerText = document.getElementById('email').value || "";
+            document.getElementById('resPhone').innerText = document.getElementById('phone').value || "";
+            document.getElementById('resAddress').innerText = document.getElementById('address').value || "";
+            document.getElementById('resWeb').innerText = document.getElementById('website').value || "";
+
+            // Update lists in resume preview
+            updateResumeLanguages();
+            updateResumeHobbies();
+            updateResumeSkills();
+            updateResumeEducation();
+            updateResumeExperience();
+            updateResumeExtra();
+        }
+
+        // Generic function to add items to a list (used for languages, hobbies, skills, experience, extra)
+        function addListItem(inputId, dataArray, renderFunction, updateResumeFunction) {
+            const newItem = document.getElementById(inputId).value.trim();
+            if (newItem && !dataArray.includes(newItem)) { // Check for duplicates only if type is 'text' (not for experience/extra where content can be similar)
+                dataArray.push(newItem);
+                renderFunction(); // Re-render the form list
+                updateResumeFunction(); // Update the resume preview
+                document.getElementById(inputId).value = ''; // Clear input field
+            } else if (newItem && (inputId === 'newExperience' || inputId === 'newExtra')) { // Allow duplicates for experience/extra
+                 dataArray.push(newItem);
+                renderFunction();
+                updateResumeFunction();
+                document.getElementById(inputId).value = '';
+            }
+        }
+
+        // Generic function to delete items from a list
+        function deleteListItem(itemToRemove, dataArray, renderFunction, updateResumeFunction) {
+            const index = dataArray.indexOf(itemToRemove);
+            if (index > -1) {
+                dataArray.splice(index, 1);
+                renderFunction();
+                updateResumeFunction();
+            }
+        }
+
+        // Generic function to update items in a list
+        function updateListItem(oldItem, newItem, dataArray, renderFunction, updateResumeFunction) {
+            const index = dataArray.indexOf(oldItem);
+            if (index !== -1) {
+                if (newItem.trim() === '') {
+                    // If the new value is empty, treat it as a delete
+                    deleteListItem(oldItem, dataArray, renderFunction, updateResumeFunction);
+                } else {
+                    dataArray[index] = newItem.trim();
+                    renderFunction();
+                    updateResumeFunction();
+                }
+            }
+        }
+
+        // Generic function to render lists in the form (with input fields and action buttons)
+        function renderList(targetId, dataArray, inputType = 'text') {
+            const listElement = document.getElementById(targetId);
+            listElement.innerHTML = '';
+            dataArray.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'input-list-item';
+                let inputHtml = '';
+
+                if (inputType === 'textarea') {
+                    inputHtml = `<textarea onblur="updateListItem('${item}', this.value, ${targetId.replace('List', '')}, render${targetId.replace('List', '')}, updateResume${targetId.replace('List', '')})" class="flex-grow w-full p-2 text-sm">${item}</textarea>`;
+                } else { // default to text input
+                    inputHtml = `<input type="text" value="${item}" onblur="updateListItem('${item}', this.value, ${targetId.replace('List', '')}, render${targetId.replace('List', '')}, updateResume${targetId.replace('List', '')})" class="flex-grow w-full p-2 text-sm">`;
+                }
+
+                div.innerHTML = `
+                    ${inputHtml}
+                    <button type="button" onclick="deleteListItem('${item}', ${targetId.replace('List', '')}, render${targetId.replace('List', '')}, updateResume${targetId.replace('List', '')})" class="action-button delete-button"><i class="fas fa-trash-alt"></i></button>
+                `;
+                listElement.appendChild(div);
+            });
+        }
+
+        // Generic function to update the resume preview lists (simple <ul><li> structure)
+        function updateResumeList(resTargetId, dataArray) {
+            const ul = document.getElementById(resTargetId);
+            ul.innerHTML = '';
+            if (dataArray.length === 0) {
+                // ul.innerHTML = '<li>N/A</li>'; // Optional: display N/A if list is empty
+                return; // Do nothing if list is empty, let CSS handle spacing
+            }
+            dataArray.forEach(item => {
+                const li = document.createElement('li');
+                li.innerText = item;
+                ul.appendChild(li);
+            });
+        }
+
+        // Specific functions for each list type, using the generic functions
+        // Languages
+        function addLanguage() { addListItem('newLanguage', languages, renderLanguages, updateResumeLanguages); }
+        function renderLanguages() { renderList('languagesList', languages, 'text'); }
+        function updateResumeLanguages() { updateResumeList('resLanguage', languages); }
+
+        // Hobbies
+        function addHobby() { addListItem('newHobby', hobbies, renderHobbies, updateResumeHobbies); }
+        function renderHobbies() { renderList('hobbiesList', hobbies, 'text'); }
+        function updateResumeHobbies() { updateResumeList('resHobbie', hobbies); }
+
+        // Skills
+        function addSkill() { addListItem('newSkill', skills, renderSkills, updateResumeSkills); }
+        function renderSkills() { renderList('skillsList', skills, 'text'); }
+        function updateResumeSkills() { updateResumeList('resSkills', skills); }
+
+        // Work Experience
+        function addExperienceItem() { addListItem('newExperience', workExperience, renderWorkExperience, updateResumeExperience); }
+        function renderWorkExperience() { renderList('experienceList', workExperience, 'textarea'); }
+        function updateResumeExperience() { updateResumeList('resExperience', workExperience); }
+
+        // Extra Qualifications
+        function addExtraItem() { addListItem('newExtra', extraQualifications, renderExtraQualifications, updateResumeExtra); }
+        function renderExtraQualifications() { renderList('extraList', extraQualifications, 'textarea'); }
+        function updateResumeExtra() { updateResumeList('resExtra', extraQualifications); }
+
+        // Academic Qualification Management
+        function addEducationEntry() {
+            const entry = {
+                exam: '',
+                university: '',
+                year: '',
+                percentage: ''
+            };
+            educationEntries.push(entry);
+            renderEducationEntries();
+            updateResumeEducation();
+        }
+
+        function renderEducationEntries() {
+            const container = document.getElementById('educationEntries');
+            container.innerHTML = '';
+            educationEntries.forEach((entry, index) => {
+                const div = document.createElement('div');
+                div.className = 'education-entry-item'; // Class for styling individual education blocks
+                div.innerHTML = `
+                    <div class="flex flex-col md:flex-row w-full space-y-2 md:space-y-0 md:space-x-2">
+                        <label class="block flex-grow">
+                            <span class="text-gray-700 font-semibold text-sm">Exam Name:</span>
+                            <input type="text" value="${entry.exam}" oninput="updateEducationField(${index}, 'exam', this.value)" placeholder="e.g., High School, B.Tech">
+                        </label>
+                        <label class="block flex-grow">
+                            <span class="text-gray-700 font-semibold text-sm">School/University:</span>
+                            <input type="text" value="${entry.university}" oninput="updateEducationField(${index}, 'university', this.value)" placeholder="e.g., Amity University">
+                        </label>
+                    </div>
+                    <div class="flex flex-col md:flex-row w-full space-y-2 md:space-y-0 md:space-x-2">
+                        <label class="block flex-grow">
+                            <span class="text-gray-700 font-semibold text-sm">Passing Year:</span>
+                            <input type="number" value="${entry.year}" oninput="updateEducationField(${index}, 'year', this.value)" placeholder="e.g., 2020">
+                        </label>
+                        <label class="block flex-grow">
+                            <span class="text-gray-700 font-semibold text-sm">Percentage/CGPA:</span>
+                            <input type="text" value="${entry.percentage}" oninput="updateEducationField(${index}, 'percentage', this.value)" placeholder="e.g., 85% or 8.5 CGPA">
+                        </label>
+                    </div>
+                    <div class="flex justify-end w-full">
+                        <button type="button" onclick="deleteEducationEntry(${index})" class="action-button delete-button text-xs"><i class="fas fa-trash-alt"></i> Delete</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateEducationField(index, field, value) {
+            if (educationEntries[index]) {
+                educationEntries[index][field] = value;
+                updateResumeEducation();
+            }
+        }
+
+        function deleteEducationEntry(index) {
+            educationEntries.splice(index, 1);
+            renderEducationEntries();
+            updateResumeEducation();
+        }
+
+        function updateResumeEducation() {
+            const tableBody = document.querySelector("#resEducation tbody");
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            if (educationEntries.length === 0) {
+                const row = tableBody.insertRow();
+                row.innerHTML = `<td colspan="4" class="text-center text-gray-500 py-2">No academic qualifications added.</td>`;
+                return;
+            }
+
+            educationEntries.forEach(entry => {
+                const row = tableBody.insertRow();
+                row.className = "hover:bg-gray-50 transition duration-150 ease-in-out";
+                row.insertCell(0).innerText = entry.exam || 'N/A';
+                row.insertCell(1).innerText = entry.university || 'N/A';
+                row.insertCell(2).innerText = entry.year || 'N/A';
+                row.insertCell(3).innerText = entry.percentage || 'N/A';
+            });
+        }
+
+        // --- Save Resume as High Quality Image ---
+        function saveResumeImage() {
+            const resumeElement = document.getElementById('resume');
+
+            // Temporarily set a white background for a cleaner screenshot if it's transparent
+            const originalBg = resumeElement.style.backgroundColor;
+            resumeElement.style.backgroundColor = '#ffffff';
+
+            html2canvas(resumeElement, {
+                scale: 4, // Increase scale for higher quality image (e.g., 2, 3, 4, 5). Higher means better quality, but larger file size and longer processing.
+                useCORS: true, // Important for images loaded from different origins (like placeholder or uploaded image)
+                logging: false, // Set to true for debugging in console
+                // Attempt to capture the full scrollable content
+                windowWidth: resumeElement.scrollWidth,
+                windowHeight: resumeElement.scrollHeight,
+                x: resumeElement.scrollLeft,
+                y: resumeElement.scrollTop,
+                scrollX: -window.scrollX, // Adjust to capture content from top-left, not current scroll position
+                scrollY: -window.scrollY
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'resume.png'; // File name
+                link.href = canvas.toDataURL('image/png'); // Get data URL of the image
+                document.body.appendChild(link); // Append to body temporarily
+                link.click(); // Programmatically click the link to trigger download
+                document.body.removeChild(link); // Remove link from body
+
+                // Revert background to original
+                resumeElement.style.backgroundColor = originalBg;
+            }).catch(error => {
+                console.error("Error generating image:", error);
+                alert("Failed to generate image. Please try again or check console for errors.");
+                // Revert background even on error
+                resumeElement.style.backgroundColor = originalBg;
+            });
+        }
+    </script>
+</body>
+</html>
